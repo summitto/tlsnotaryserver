@@ -1,0 +1,15 @@
+[submodule "circuits"]
+	path = circuits
+	url = https://github.com/tlsnotary/circuits
+[submodule "src/aesmpc"]
+	path = src/aesmpc
+	url = git@github.com:summitto/aes-mpc-lib.git
+[submodule "src/tlslite-ng"]
+	path = src/tlslite-ng
+	url = git@github.com:summitto/tlslite-ng.git
+[submodule "tagCircuits"]
+	path = tagCircuits
+	url = git@github.com:summitto/tag-verification-circuits.git
+[submodule "src/softspoken"]
+	path = src/softspoken
+	url = git@github.com:summitto/softspoken-wrapper.git

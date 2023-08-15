@@ -1,0 +1,6 @@
+garbledPool
+src/notary
+src/public.key
+.vscode
+zkey-content/
+*.key

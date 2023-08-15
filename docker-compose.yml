@@ -1,0 +1,7 @@
+version: "3.7"
+services:
+  tlsnotaryserver:
+    container_name: tlsnotaryserver
+    image: registry.summitto.com/tlsnotaryserver:master
+    ports:
+      - 10011:10011
