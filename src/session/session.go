@@ -763,28 +763,36 @@ func (s *Session) Ghash_step3(encrypted []byte) []byte {
 // Notary signs the session.
 func (s *Session) CommitHash(encrypted []byte) []byte {
 	s.sequenceCheck(35)
+
+	defer func() {
+		// this is the last step with Softspoken OT so it can be disconnected
+		s.Ot.Disconnect()
+		s.OtReleaseChan <- s.Sid
+	}()
+
 	body := s.decryptFromClient(encrypted)
+
+	if len(body) != 160 {
+		panic("commitHash invalid body size")
+	}
+
 	hisCommitHash := body[0:32]
-	hisKeyShareHash := body[32:64]
-	hisPMSShareHash := body[64:96]
+	hisCwkShareHash := body[32:64]
+	hisCivShareHash := body[64:96]
+	hisSwkShareHash := body[96:128]
+	hisSivShareHash := body[128:160]
+
 	timeBytes := make([]byte, 8)
 	binary.BigEndian.PutUint64(timeBytes, uint64(time.Now().Unix()))
 	signature := u.ECDSASign(&s.SigningKey,
 		hisCommitHash,
-		hisKeyShareHash,
-		hisPMSShareHash,
+		hisCwkShareHash,
+		hisCivShareHash,
+		hisSwkShareHash,
+		hisSivShareHash,
 		s.ghashInputsBlob,
 		s.serverPubkey,
-		s.notaryPMSShare,
-		s.cwkShare,
-		s.civShare,
-		s.swkShare,
-		s.sivShare,
 		timeBytes)
-
-	// this is the last step with Softspoken OT so it can be disconnected
-	s.Ot.Disconnect()
-	s.OtReleaseChan <- s.Sid
 
 	return s.encryptToClient(u.Concat(
 		signature,
